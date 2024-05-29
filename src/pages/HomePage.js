@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import SaleOrderForm from '../components/SaleOrderForm';
 import SaleOrders from '../components/SaleOrders';
-import ThemeToggle from '../components/ThemeToggle';
-import { Box, Heading } from '@chakra-ui/react';
 
 const HomePage = () => {
+  const [editData, setEditData] = useState(null);
+
+  const handleEdit = (data) => {
+    setEditData(data);
+  };
+
+  const handleFormSubmit = (data) => {
+    // Handle form submission logic here
+    console.log('Form submitted:', data);
+    setEditData(null);
+  };
+
   return (
-    <Box p={4}>
-      <Heading mb={4}>Sale Order Management</Heading>
-      <ThemeToggle />
-      <SaleOrders />
-    </Box>
+    <div>
+      <SaleOrders onEdit={handleEdit} />
+      {editData && (
+        <SaleOrderForm initialData={editData} onSubmit={handleFormSubmit} />
+      )}
+    </div>
   );
 };
 

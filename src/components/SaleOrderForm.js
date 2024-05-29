@@ -1,31 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Input, Button, FormLabel, FormControl, VStack } from '@chakra-ui/react';
+import { Box, Button, Input, VStack, FormControl, FormLabel } from '@chakra-ui/react';
 import { DatePicker } from 'chakra-ui-date-input';
 
-const SaleOrderForm = ({ defaultValues, onSubmit, readOnly = false }) => {
-  const { handleSubmit, control } = useForm({
-    defaultValues,
+const SaleOrderForm = ({ initialData, onSubmit, readOnly = false }) => {
+  const { register, handleSubmit, reset, control } = useForm({
+    defaultValues: initialData,
   });
 
+  useEffect(() => {
+    reset(initialData);
+  }, [initialData, reset]);
+
+  const handleFormSubmit = (data) => {
+    onSubmit(data);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Box p={8} as="form" onSubmit={handleSubmit(handleFormSubmit)}>
       <VStack spacing={4}>
-        <FormControl>
+        <FormControl id="CustomerID">
           <FormLabel>Customer ID</FormLabel>
-          <Controller
-            name="customer_id"
-            control={control}
-            render={({ field }) => <Input {...field} isReadOnly={readOnly} />}
-          />
+          <Input type="number" {...register('CustomerID')} />
         </FormControl>
-        <FormControl>
+        <FormControl id="customerName">
+          <FormLabel>Customer Name</FormLabel>
+          <Input type="text" {...register('customerName')} />
+        </FormControl>
+        <FormControl id="invoiceNumber">
           <FormLabel>Invoice Number</FormLabel>
-          <Controller
-            name="invoice_no"
-            control={control}
-            render={({ field }) => <Input {...field} isReadOnly={readOnly} />}
-          />
+          <Input type="number" {...register('invoiceNumber')} />
         </FormControl>
         <FormControl>
           <FormLabel>Invoice Date</FormLabel>
@@ -37,11 +41,11 @@ const SaleOrderForm = ({ defaultValues, onSubmit, readOnly = false }) => {
             )}
           />
         </FormControl>
-        <Button type="submit" isDisabled={readOnly}>
+        <Button type="submit" colorScheme="teal">
           Submit
         </Button>
       </VStack>
-    </form>
+    </Box>
   );
 };
 
