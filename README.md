@@ -34,6 +34,7 @@ cd sale-order-management
 2. Install dependencies:
 ```bash
     npm install
+    npm install @chakra-ui/react @chakra-ui/icons @emotion/reactṣ @emotion/styled framer-motion react-router-dom@latest @tanstack/react-query react-hook-form @chakra-ui/icons chakra-ui-date-input --legacy-peer-deps
 ```
 3. Start the development server:
 ```bash
