@@ -5,7 +5,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   Button,
@@ -13,11 +12,12 @@ import {
   FormLabel,
   Input,
   VStack,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import { DatePicker } from 'chakra-ui-date-input';
 
 const SaleOrderModal = ({ isOpen, onClose, initialData, onSubmit, readOnly = false }) => {
-  const { register, handleSubmit, reset, control } = useForm({
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm({
     defaultValues: initialData,
   });
 
@@ -34,21 +34,24 @@ const SaleOrderModal = ({ isOpen, onClose, initialData, onSubmit, readOnly = fal
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{readOnly ? 'View Sale Order' : 'Create a sale order'}</ModalHeader>
+        <ModalHeader>{readOnly ? 'View Sale Order' : 'Create a Sale Order'}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4} as="form" onSubmit={handleSubmit(handleFormSubmit)}>
-            <FormControl id="CustomerID">
+            <FormControl id="CustomerID" isInvalid={errors.CustomerID}>
               <FormLabel>Customer ID</FormLabel>
-              <Input type="number" {...register('CustomerID')} isReadOnly={readOnly} />
+              <Input type="number" {...register('CustomerID', { required: 'Customer ID is required' })} isReadOnly={readOnly} />
+              <FormErrorMessage>{errors.CustomerID && errors.CustomerID.message}</FormErrorMessage>
             </FormControl>
-            <FormControl id="customerName">
+            <FormControl id="customerName" isInvalid={errors.customerName}>
               <FormLabel>Customer Name</FormLabel>
-              <Input type="text" {...register('customerName')} isReadOnly={readOnly} />
+              <Input type="text" {...register('customerName', { required: 'Customer Name is required' })} isReadOnly={readOnly} />
+              <FormErrorMessage>{errors.customerName && errors.customerName.message}</FormErrorMessage>
             </FormControl>
-            <FormControl id="price">
+            <FormControl id="price" isInvalid={errors.price}>
               <FormLabel>Price</FormLabel>
-              <Input type="number" {...register('price')} isReadOnly={readOnly} />
+              <Input type="number" {...register('price', { required: 'Price is required' })} isReadOnly={readOnly} />
+              <FormErrorMessage>{errors.price && errors.price.message}</FormErrorMessage>
             </FormControl>
             <FormControl>
               <FormLabel>Invoice Date</FormLabel>
@@ -60,17 +63,13 @@ const SaleOrderModal = ({ isOpen, onClose, initialData, onSubmit, readOnly = fal
                 )}
               />
             </FormControl>
+            {!readOnly && (
+              <Button type="submit" colorScheme="teal">
+                Submit
+              </Button>
+            )}
           </VStack>
         </ModalBody>
-
-        {!readOnly && (
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} type="submit">
-              Submit
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        )}
       </ModalContent>
     </Modal>
   );

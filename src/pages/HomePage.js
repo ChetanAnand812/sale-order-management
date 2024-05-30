@@ -7,6 +7,14 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [readOnly, setReadOnly] = useState(false);
+  const [activeSaleOrders, setActiveSaleOrders] = useState([
+    { CustomerID: 1, customerName: 'Chetan', price: 100, invoice_date: '24/5/2024 (11:07 PM)' },
+    { CustomerID: 2, customerName: 'Raj', price: 210, invoice_date: '24/5/2024 (11:30 PM)' },
+  ]);
+  const [completedSaleOrders] = useState([
+    { CustomerID: 1, customerName: 'Pratyush', price: 150, invoice_date: '22/5/2024 (10:00 AM)' },
+    { CustomerID: 2, customerName: 'Rupesh', price: 220, invoice_date: '20/5/2024 (02:45 PM)' },
+  ]);
 
   const handleCreateClick = () => {
     setModalData(null);
@@ -31,24 +39,29 @@ const HomePage = () => {
   };
 
   const handleFormSubmit = (data) => {
-    console.log('Form submitted:', data);
-    // Handle form submission logic
+    if (modalData) {
+      // Edit existing order
+      setActiveSaleOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.CustomerID === modalData.CustomerID ? { ...order, ...data } : order
+        )
+      );
+    } else {
+      // Create new order
+      const newSaleOrder = {
+        ...data,
+        CustomerID: activeSaleOrders.length + 1,
+        invoice_date: new Date().toLocaleString(),
+      };
+      setActiveSaleOrders((prevOrders) => [...prevOrders, newSaleOrder]);
+    }
+    setIsModalOpen(false);
   };
-
-  const activeSaleOrders = [
-    { CustomerID: 1, customerName: 'Spider', price: 100, invoice_date: '24/5/2024 (11:07 PM)' },
-    { CustomerID: 2, customerName: 'Spider', price: 210, invoice_date: '24/5/2024 (11:30 PM)' },
-  ];
-
-  const completedSaleOrders = [
-    { CustomerID: 3, customerName: 'Ant', price: 150, invoice_date: '22/5/2024 (10:00 AM)' },
-    { CustomerID: 4, customerName: 'Bee', price: 220, invoice_date: '20/5/2024 (02:45 PM)' },
-  ];
 
   return (
     <Box p={8}>
       <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleCreateClick}>
-      Sale Order
+        Sale Order
       </Button>
 
       <Tabs mt={4}>
@@ -65,13 +78,13 @@ const HomePage = () => {
                   <Th>Customer ID</Th>
                   <Th>Customer Name</Th>
                   <Th>Price (₹)</Th>
-                  <Th>Last Modified</Th>
+                  <Th>Invoice Date</Th>
                   <Th>Edit/View</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {activeSaleOrders.map((order) => (
-                  <Tr key={order.id}>
+                  <Tr key={order.CustomerID}>
                     <Td>{order.CustomerID}</Td>
                     <Td>{order.customerName}</Td>
                     <Td>₹ {order.price}</Td>
@@ -99,13 +112,13 @@ const HomePage = () => {
                   <Th>Customer ID</Th>
                   <Th>Customer Name</Th>
                   <Th>Price (₹)</Th>
-                  <Th>Last Modified</Th>
+                  <Th>Invoice Date</Th>
                   <Th>View</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {completedSaleOrders.map((order) => (
-                  <Tr key={order.id}>
+                  <Tr key={order.CustomerID}>
                     <Td>{order.CustomerID}</Td>
                     <Td>{order.customerName}</Td>
                     <Td>₹ {order.price}</Td>
